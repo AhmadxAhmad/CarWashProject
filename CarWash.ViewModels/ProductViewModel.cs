@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarWash.Api.Models
+namespace CarWash.ViewModels
 {
-    public class Product
+    public class ProductViewModel
     {
-        [Key]
         public int ProductId { get; set; }
         [Required]
         public string ProductTitle { get; set; }
@@ -18,10 +17,8 @@ namespace CarWash.Api.Models
         public int Price { get; set; }
         public bool Status { get; set; }
 
-
-        public Category Category { get; set; }
+        public string? CategoryName { get; set; }
         public int CategoryId { get; set; }
-
 
 
     }

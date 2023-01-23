@@ -1,0 +1,96 @@
+﻿@page "/BokaTid"
+
+@inject ServiceRepository _sRepo
+
+<PageTitle>Counter</PageTitle>
+
+@if (SelectedProductId==0){
+@if (categories != null)
+{
+    if (categories.Any())
+    {
+        foreach (var item in categories)
+        {
+            <CategoriesComponent Category="@item" CreateOrder="NewOrder" />
+        }
+    }
+    else
+    {
+        <h5>No contents</h5>
+    }
+}
+else
+{
+    <h6>Loading...</h6>
+}
+}
+@if (SelectedProductId != 0 && !DateTimeIsSelected)
+{
+    <DateTimeComponent id="SelectedProductId" BackToProducts="NewOrder" ChoosenDateTime="SetDateTime" />
+}
+
+@if (DateTimeIsSelected && SelectedProductId != 0)
+{
+    <CustomerRegestrationComponent BackToDateTime="SetDateTime" CustomerInfo="MakeOrder" />
+}
+
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    <span class="alert alert-info">@Message</span>
+}
+@code {
+    private IEnumerable<CategoryViewModel> categories;
+
+    private string Message = string.Empty;
+
+    private int SelectedProductId = 0;
+
+    private DateTime DateTime;
+    private bool DateTimeIsSelected = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await _sRepo.GetAllCategories();
+
+    }
+    private async Task NewOrder(int id)
+    {
+        SelectedProductId = id;
+    }
+    private async Task SetDateTime(DateTime dateTime)
+    {
+        DateTime = dateTime;
+        DateTimeIsSelected = !DateTimeIsSelected;
+    }
+
+    private async Task MakeOrder(CustomerViewModel customer)
+    {
+        var rnd = new Random();
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        string bookingId = new string(Enumerable.Repeat(chars, 10)
+            .Select(s => s[rnd.Next(s.Length)]).ToArray());
+        while(!await _sRepo.CheckBookingId(bookingId))
+        {
+            bookingId = new string(Enumerable.Repeat(chars, 10)
+            .Select(s => s[rnd.Next(s.Length)]).ToArray());
+        }
+        var CustomerId = await _sRepo.CreateCustomer(customer);
+        var OrderViewModel = new OrderViewModel
+            {
+                BookingId = bookingId,
+                BookingDate = DateTime,
+                CustomerId = CustomerId,
+                ProductId = SelectedProductId
+            };
+        var res = await _sRepo.MakeOrder(OrderViewModel);
+
+      if (res){
+            Message = "Done!";
+            SelectedProductId = 0;
+            DateTimeIsSelected = false;
+      }
+
+    }
+
+}

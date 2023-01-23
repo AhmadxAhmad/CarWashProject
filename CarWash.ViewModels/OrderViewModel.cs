@@ -1,30 +1,31 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarWash.Api.Models
+namespace CarWash.ViewModels
 {
-    public class Order
+    public class OrderViewModel
     {
-        [Key]
-        public int OrderId { get; set; }
+        public int Id { get; set; }
 
         [Required]
         public string BookingId { get; set; }
 
         public DateTime CreateDate { get; set; } = DateTime.Now;
-
         [Required]
+        [DataType(DataType.DateTime)]
         public DateTime BookingDate { get; set; }
-
-        public Product Product { get; set; }
-        public int ProductId { get; set; }
-
         [Required]
         public bool IsCanceled { get; set; } = false;
         [Required]
         public bool IsDone { get; set; } = false;
 
-
-        public Customer Customer { get; set; }
+        public string? CustomerName { get; set; }
+        [Required]
         public int CustomerId { get; set; }
+
+        public string? ProductTitle { get; set; }
+        [Required]
+        public int ProductId { get; set; }
+
+
     }
 }

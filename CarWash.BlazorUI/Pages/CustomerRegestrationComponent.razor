@@ -1,0 +1,39 @@
+﻿<h3>CustomerRegestrationComponent</h3>
+<a class="btn btn-link" @onclick="BackButton">Back</a>
+
+<EditForm Model="customer" OnValidSubmit="CreateFullOrder">
+
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+<input class="form-control" @bind="customer.CustomerName" @bind:event="oninput" placeholder="Name" />
+<input class="form-control" @bind="customer.CustomerPhone" @bind:event="oninput" placeholder="Phone" />
+<input class="form-control" @bind="customer.CustomerEmail" @bind:event="oninput" placeholder="Email" />
+<input class="form-control" @bind="customer.RegNo" @bind:event="oninput" placeholder="RegNum" />
+
+
+<button type="submit"  class="btn btn-primary">Bekräfta</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public DateTime dateTime { get; set; }
+
+    private CustomerViewModel customer = new();
+
+    [Parameter]
+    public EventCallback<DateTime> BackToDateTime { get; set; }
+    [Parameter]
+    public EventCallback<CustomerViewModel> CustomerInfo { get; set; }
+    private async Task BackButton()
+    {
+        await BackToDateTime.InvokeAsync();
+    }
+
+    private async Task CreateFullOrder()
+    {
+        await CustomerInfo.InvokeAsync(customer);
+    }
+
+
+}

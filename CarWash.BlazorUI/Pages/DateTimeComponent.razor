@@ -1,0 +1,29 @@
+﻿<h3>DateTimeComponent</h3>
+<a class="btn btn-link" @onclick="BackButton"> back</a>
+
+<input type="datetime" @bind-value="dateTime" />
+<button @onclick="ChooseDateTime">Välj Date and Time</button>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private DateTime dateTime;
+
+    [Parameter]
+    public EventCallback<int> BackToProducts { get; set; }
+
+    [Parameter]
+    public EventCallback<DateTime> ChoosenDateTime { get; set; }
+
+    private async Task BackButton()
+    {
+        await BackToProducts.InvokeAsync(0);
+    }
+
+    private async Task ChooseDateTime()
+    {
+        await ChoosenDateTime.InvokeAsync(dateTime);
+    }
+
+}

@@ -1,0 +1,41 @@
+﻿
+            <div class="row bg-info m-4">
+    <h3>@Category.CategoryTitle</h3>
+    @if (Category.Products is not null && Category.Products.Any())
+    {
+                        <div class="row bg-light">
+            @foreach (var product in Category.Products)
+            {
+                                    <h6>@(
+                                    product.ProductTitle
+                                    )</h6>
+                                    <h6>@(
+                                    product.ProductTime
+                                    )</h6>
+
+                                    <h6>@(
+                                    product.Price
+                                    )</h6>
+                                    <button @onclick="()=> NewOrder(product.ProductId)">Boka</button>
+
+            }
+                        </div>
+    }
+
+
+            </div>
+
+
+@code {
+    [Parameter]
+    public CategoryViewModel Category { get; set; }
+
+    [Parameter]
+    public EventCallback<int> CreateOrder { get; set; }
+
+    public async Task NewOrder(int id)
+    {
+        await CreateOrder.InvokeAsync(id);
+    }
+
+}
